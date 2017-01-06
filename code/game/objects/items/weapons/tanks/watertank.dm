@@ -302,12 +302,17 @@
 	if(nozzle_mode == METAL_FOAM)
 		if(!Adj|| !istype(target, /turf))
 			return
+		var/datum/reagents/R = reagents
+		if(R.total_volume < 25)
+			user <<"<span class='warning'>You need at least 25 units of water to use the metal foam synthesizer!</span>"
+			return
 		if(metal_synthesis_cooldown < 5)
 			var/obj/effect/particle_effect/foam/metal/F = PoolOrNew(/obj/effect/particle_effect/foam/metal, get_turf(target))
 			F.amount = 0
 			metal_synthesis_cooldown++
 			spawn(100)
 				metal_synthesis_cooldown--
+			R.remove_any(25)
 		else
 			user << "<span class='warning'>Metal foam mix is still being synthesized...</span>"
 			return
